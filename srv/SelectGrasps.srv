@@ -1,0 +1,10 @@
+# A service call for assembling a series of laser scans into a point cloud
+# The request send to the service
+
+geometry_msgs/Pose hand_pose
+
+---
+
+# The response returned by the service
+
+grasp_selection/GraspList grasps
