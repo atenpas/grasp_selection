@@ -128,20 +128,12 @@ std::vector<GraspScored> Reaching::selectFeasibleGrasps(const agile_grasp::Grasp
 				std::vector<double> joint_positions = extractJointPositions(response);
         if (params_.is_printing_)
           printf("extracted joint positions\n");
-				GraspScored grasp_scored(i, grasp_pose, grasp_eigen_rot.approach_, grasp.width.data, joint_positions, 0.0);
+				GraspScored grasp_scored(i, grasp_pose, grasp_eigen_rot.approach_, grasp.width.data, joint_positions, 0.0, 
+          grasps_in.grasps[i].surface_center);
 				grasps_selected.push_back(grasp_scored);
       }
 		}
 	}
-  
-  //tf::TransformBroadcaster br;
-  //tf::Transform transform;
-  //GraspScored g = grasps_selected[0];
-  //transform.setOrigin( tf::Vector3(g.pose_st_.pose.position.x, g.pose_st_.pose.position.y, g.pose_st_.pose.position.z) );
-  //transform.setRotation( tf::Quaternion(g.pose_st_.pose.orientation.x, g.pose_st_.pose.orientation.y, g.pose_st_.pose.orientation.z, g.pose_st_.pose.orientation.w) );
-  //br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base", "carrot1"));
-  //ros::Duration(1.0).sleep();
-  //printf("broadcasted TF\n");
 	
 	return grasps_selected;
 }

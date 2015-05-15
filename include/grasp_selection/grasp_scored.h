@@ -24,6 +24,7 @@ struct GraspScored
 	double width_; ///< the aperture required by the robot hand to execute the grasp
 	std::vector<double> joint_positions_; ///< the Inverse Kinematics solution for the grasp pose
 	double score_; ///< the score, represents how likely the grasp is to succeed (the lower, the likelier)
+  geometry_msgs::Vector3 surface_position_; ///< the grasp position projected back onto the object surface
 
 	/**
 	 * \brief Default constructor.
@@ -40,8 +41,9 @@ struct GraspScored
 	 * \param score the score: how likely the grasp is to succeed
 	*/
 	GraspScored(int id, const geometry_msgs::PoseStamped& pose_st, const Eigen::Vector3d& approach_eigen, double width,
-		std::vector<double> joint_positions, double score)	
-		:	id_(id), pose_st_(pose_st), width_(width), joint_positions_(joint_positions), score_(score)
+		std::vector<double> joint_positions, double score, const geometry_msgs::Vector3& surface_position)
+		:	id_(id), pose_st_(pose_st), width_(width), joint_positions_(joint_positions), score_(score), 
+      surface_position_(surface_position)
 	{ 
 		tf::vectorEigenToMsg(approach_eigen, approach_);
 	}

@@ -3,9 +3,10 @@
 
 Selection::Selection(ros::NodeHandle& node, const std::string& grasps_topic, const std::string& cloud_topic,
 	const Reaching::Parameters& reaching_params, const urdf::Model& urdf, const std::string& joint_states_topic,
-	int num_selected, double marker_lifetime, int scoring_mode)
+	int num_selected, double marker_lifetime, int scoring_mode, bool draws_from_surface)
 	: planning_frame_(reaching_params.planning_frame_), marker_lifetime_(marker_lifetime), has_grasps_(false), 
-    has_cloud_(false), cloud_(new PointCloud), hand_offset_(reaching_params.hand_offset_), scoring_mode_(scoring_mode)
+    has_cloud_(false), cloud_(new PointCloud), hand_offset_(reaching_params.hand_offset_), scoring_mode_(scoring_mode), 
+    draws_from_surface_(draws_from_surface)
 {
 	// create subscriber to ROS topic <grasps_topic> from antigrasp package
 	grasps_sub_ = node.subscribe(grasps_topic, 10, &Selection::graspsCallback, this);
@@ -169,10 +170,19 @@ void Selection::drawGrasps(const std::vector<GraspScored>& list)
   
   for (int i=0; i < list.size(); i++)
   {
-    geometry_msgs::Point position = list[i].pose_st_.pose.position;
-    position.x += hand_offset_ * list[i].approach_.x;
-    position.y += hand_offset_ * list[i].approach_.y;
-    position.z += hand_offset_ * list[i].approach_.z;
+    geometry_msgs::Point position;
+    if (draws_from_surface_)
+    {
+      position.x = list[i].surface_position_.x;
+      position.y = list[i].surface_position_.y;
+      position.z = list[i].surface_position_.z;
+    }
+    else
+    {      
+      position.x = list[i].pose_st_.pose.position.x + hand_offset_ * list[i].approach_.x;
+      position.y = list[i].pose_st_.pose.position.y + hand_offset_ * list[i].approach_.y;
+      position.z = list[i].pose_st_.pose.position.z + hand_offset_ * list[i].approach_.z;
+    }
     marker_array.markers[i] = createApproachMarker(planning_frame_, position, list[i].approach_, i, cyan, 0.4, 0.008);
   }
   
@@ -200,9 +210,9 @@ visualization_msgs::Marker Selection::createApproachMarker(const std::string& fr
   p.x = center.x;
   p.y = center.y;
   p.z = center.z;
-  q.x = p.x - 0.15 * approach.x;
-  q.y = p.y - 0.15 * approach.y;
-  q.z = p.z - 0.15 * approach.z;
+  q.x = p.x - 0.05 * approach.x;
+  q.y = p.y - 0.05 * approach.y;
+  q.z = p.z - 0.05 * approach.z;
   marker.points.push_back(p);
   marker.points.push_back(q);
   return marker;

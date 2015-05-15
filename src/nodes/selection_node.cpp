@@ -47,11 +47,13 @@ int main(int argc, char** argv)
   double marker_lifetime;
   bool uses_scoring;
   int scoring_mode;
+  bool draws_from_surface;
   node.getParam("grasps_topic", grasps_topic);
   node.getParam("cloud_topic", cloud_topic);
   node.getParam("joint_states_topic", joint_states_topic);
   node.getParam("marker_lifetime", marker_lifetime);
   node.getParam("scoring_mode", scoring_mode);
+  node.getParam("draws_from_surface", draws_from_surface);
     
   // get robot joints information from URDF file
   urdf::Model urdf;
@@ -64,7 +66,7 @@ int main(int argc, char** argv)
   
   // create selection object and select grasps
   Selection selection(node, grasps_topic, cloud_topic, params, urdf, joint_states_topic, num_selected, marker_lifetime, 
-    scoring_mode);
+    scoring_mode, draws_from_surface);
   selection.runNode();
   	
 	return 0;

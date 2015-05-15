@@ -60,10 +60,11 @@ class Selection
 		 * \param joint_states_topic the ROS topic where the joint states of the robot are published
 		 * \param num_selected the maximum number of selected grasps
 		 * \param marker_lifetime the lifetime of visual markers in the Rviz visualization
+     * \param draws_from_surface whether grasp positions are drawn on the object surface in Rviz
 		*/
 		Selection(ros::NodeHandle& node, const std::string& grasps_topic, const std::string& cloud_topic, 
       const Reaching::Parameters& reaching_params, const urdf::Model& urdf, const std::string& joint_states_topic, 
-      int num_selected, double marker_lifetime, int scoring_mode);
+      int num_selected, double marker_lifetime, int scoring_mode, bool draws_from_surface);
 			
 		/**
 		 * \brief Destructor.
@@ -161,6 +162,7 @@ class Selection
     double marker_lifetime_;
     double hand_offset_;
     int scoring_mode_;
+    bool draws_from_surface_;
 };
 
 #endif /* SELECTION_H */ 

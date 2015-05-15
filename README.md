@@ -88,8 +88,57 @@ The parameters in the ROS launch file *select_grasps.launch* are described below
 
 ## 5) Grasping Demo
 
-This requires [openrave](http://www.openrave.org/). The grasping demo can be run by:
+**Requirements**
+
+* a Baxter research robot with a Microsoft Kinect or a similar range sensor
+* [openrave](http://www.openrave.org/)
+* [agile_grasp](http://wiki.ros.org/agile_grasp)
+
+The grasping demo can be run by:
 
 ```
 python ~/ros_workspace/src/grasp_selection/scripts/grasping_demo.py
+```
+
+<a href="https://raw.githubusercontent.com/atenpas/grasp_selection/master/readme/openrave.png">
+	<img src="./readme/openrave.png" alt="Baxter in openrave" title="Baxter in openrave" width="60%" height="60%" /></a>
+
+### Instructions
+
+1. Start Joint Trajectory Action Server:
+
+```
+rosrun baxter_interface joint_trajectory_action_server.py -m velocity
+```
+
+2. Start MoveIt & Rviz:
+
+```
+roslaunch baxter_moveit_config demo_baxter.launch
+```
+
+3. In Rviz, load the configuration file *grasp_selection/rviz/grasp_selection.rviz*.
+
+4. Connect to an Asus range sensor:
+
+```
+roslaunch openni2_launch openni2.launch camera:=kinect_r device_id:=#1
+```
+
+5. Launch the agile_grasp perception node:
+
+```
+roslaunch agile_grasp baxter_grasps.launch
+```
+
+6. Turn on the robot:
+
+```
+rosrun baxter_tools enable_robot.py -e
+```
+
+7. Run the grasping demo:
+
+```
+roslaunch affordance_grasping mlaffordance_clear_table_cpp.launch
 ```

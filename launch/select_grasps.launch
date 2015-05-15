@@ -6,6 +6,7 @@
     <param name="joint_states_topic" value= "/joint_states" />
     <param name="marker_lifetime" value="60" />
     <param name="uses_scoring" value="true" />
+    <param name="draws_from_surface" value="true" />
     
 		<!-- Reachibility Parameters -->
     <rosparam param="workspace"> [0.6, 1.0, -0.26, 0.14, -0.23, 1] </rosparam>
@@ -26,6 +27,6 @@
     
     <!-- Scoring Parameters -->
     <param name="urdf" value="/home/baxter/baxter_ws/src/baxter_common/baxter_description/urdf/baxter.urdf" />    
-    <param name="num_selected" value="50" />
+    <param name="num_selected" value="5" />
 	</node>
 </launch>
