@@ -105,40 +105,40 @@ python ~/ros_workspace/src/grasp_selection/scripts/grasping_demo.py
 
 ### Instructions
 
-1. Start Joint Trajectory Action Server:
+(1) Start Joint Trajectory Action Server:
 
 ```
 rosrun baxter_interface joint_trajectory_action_server.py -m velocity
 ```
 
-2. Start MoveIt & Rviz:
+(2) Start MoveIt & Rviz:
 
 ```
 roslaunch baxter_moveit_config demo_baxter.launch
 ```
 
-3. In Rviz, load the configuration file *grasp_selection/rviz/grasp_selection.rviz*.
+(3) In Rviz, load the configuration file *grasp_selection/rviz/grasp_selection.rviz*.
 
 
-4. Connect to an Asus range sensor:
+(4) Connect to an Asus range sensor:
 
 ```
 roslaunch openni2_launch openni2.launch camera:=kinect_r device_id:=#1
 ```
 
-5. Launch the agile_grasp perception node:
+(5) Launch the agile_grasp perception node:
 
 ```
 roslaunch agile_grasp baxter_grasps.launch
 ```
 
-6. Turn on the robot:
+(6) Turn on the robot:
 
 ```
 rosrun baxter_tools enable_robot.py -e
 ```
 
-7. Run the grasping demo:
+(7) Run the grasping demo:
 
 ```
 roslaunch affordance_grasping mlaffordance_clear_table_cpp.launch
