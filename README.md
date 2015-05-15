@@ -18,7 +18,7 @@ functions that take into account:
 	<img src="./readme/rviz1.png" alt="Selected grasps visualized in Rviz" title="Selected grasps visualized in Rviz" 
 		width="60%" height="60%" /></a>
 	
-This package consists of one ROS node: *select_grasps*.
+This package consists of one ROS node: *select_grasps*. This node provides a ROS service: *SelectGrasps*.
 
 
 ## 2) Requirements
@@ -123,7 +123,7 @@ roslaunch baxter_moveit_config demo_baxter.launch
 (4) Connect to an Asus range sensor:
 
 ```
-roslaunch openni2_launch openni2.launch camera:=kinect_r device_id:=#1
+roslaunch openni2_launch openni2.launch
 ```
 
 (5) Launch the agile_grasp perception node:
