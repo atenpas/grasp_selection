@@ -15,7 +15,7 @@ functions that take into account:
 3. how far the robot arm has to travel through the robot's workspace.
 
 <a href="./readme/rviz1.png"><img src="./readme/rviz1.png" alt="Selected grasps visualized in Rviz" 
-	title="Localize grasps with Baxter"	style="width: 20%; height: 20%" /></a>
+	title="Selected grasps visualized in Rviz"	style="width: 20%; height: 20%" /></a>
 	
 This package consists of one ROS node: *select_grasps*.
 
