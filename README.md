@@ -84,3 +84,12 @@ The parameters in the ROS launch file *select_grasps.launch* are described below
 
 * urdf: the location of the URDF file
 * num_selected: the number of selected grasps
+
+
+## 5) Grasping Demo
+
+This requires [openrave](http://www.openrave.org/). The grasping demo can be run by:
+
+```
+python ~/ros_workspace/src/grasp_selection/scripts/grasping_demo.py
+```
