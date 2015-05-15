@@ -14,8 +14,9 @@ functions that take into account:
 2. how easy it is to perform the grasp with the robot hand, and
 3. how far the robot arm has to travel through the robot's workspace.
 
-<a href="./readme/rviz1.png"><img src="./readme/rviz1.png" alt="Selected grasps visualized in Rviz" 
-	title="Selected grasps visualized in Rviz" width="60%" height="60%" /></a>
+<a href="https://raw.githubusercontent.com/atenpas/grasp_selection/master/readme/rviz1.png">
+	<img src="./readme/rviz1.png" alt="Selected grasps visualized in Rviz" title="Selected grasps visualized in Rviz" 
+		width="60%" height="60%" /></a>
 	
 This package consists of one ROS node: *select_grasps*.
 
