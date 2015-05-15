@@ -97,7 +97,7 @@ The parameters in the ROS launch file *select_grasps.launch* are described below
 The grasping demo can be run by:
 
 ```
-python ~/ros_workspace/src/grasp_selection/scripts/grasping_demo.py
+python ~/ros_ws/src/grasp_selection/scripts/grasping_demo.py
 ```
 
 <a href="https://raw.githubusercontent.com/atenpas/grasp_selection/master/readme/openrave.png">
@@ -141,5 +141,5 @@ rosrun baxter_tools enable_robot.py -e
 (7) Run the grasping demo:
 
 ```
-roslaunch affordance_grasping mlaffordance_clear_table_cpp.launch
+python ~/ros_ws/src/grasp_selection/scripts/grasping_demo.py
 ```
