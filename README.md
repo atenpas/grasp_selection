@@ -119,6 +119,7 @@ roslaunch baxter_moveit_config demo_baxter.launch
 
 3. In Rviz, load the configuration file *grasp_selection/rviz/grasp_selection.rviz*.
 
+
 4. Connect to an Asus range sensor:
 
 ```
