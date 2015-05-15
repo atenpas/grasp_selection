@@ -4,7 +4,6 @@
   	<param name="cloud_topic" value="/register_clouds/point_cloud" />
     <param name="grasps_topic" value="/find_grasps/grasps" />
     <param name="joint_states_topic" value= "/joint_states" />
-    <param name="plots" value="false" />
     <param name="marker_lifetime" value="60" />
     <param name="uses_scoring" value="true" />
     

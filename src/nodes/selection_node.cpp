@@ -50,7 +50,6 @@ int main(int argc, char** argv)
   node.getParam("grasps_topic", grasps_topic);
   node.getParam("cloud_topic", cloud_topic);
   node.getParam("joint_states_topic", joint_states_topic);
-  node.getParam("plots", plots);
   node.getParam("marker_lifetime", marker_lifetime);
   node.getParam("scoring_mode", scoring_mode);
     
