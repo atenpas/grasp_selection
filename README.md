@@ -157,3 +157,6 @@ rosrun baxter_tools enable_robot.py -e
 ```
 python ~/ros_ws/src/grasp_selection/scripts/grasping_demo.py
 ```
+
+<a href="https://raw.githubusercontent.com/atenpas/agile_grasp/master/readme/vlc0.png">
+	<img src="https://raw.githubusercontent.com/atenpas/agile_grasp/master/readme/vlc0.png" alt="Baxter in openrave" title="Baxter in openrave" width="60%" height="60%" /></a>
