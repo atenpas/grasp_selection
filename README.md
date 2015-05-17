@@ -108,7 +108,7 @@ python ~/ros_ws/src/grasp_selection/scripts/grasping_demo.py
 ### Instructions
 
 The following instructions are an example. To be able to run the demo, you need to modify the 
-**agile_grasp** launch file to work with your range sensor setup.
+agile_grasp launch file to work with your range sensor setup.
 
 (1) Start Joint Trajectory Action Server:
 
@@ -140,13 +140,19 @@ frame.
 roslaunch agile_grasp baxter_grasps.launch
 ```
 
-(7) Turn on the robot:
+(7) Launch the grasp_selection node:
+
+```
+roslaunch grasp_selection select_grasps.launch
+```
+
+(8) Turn on the robot:
 
 ```
 rosrun baxter_tools enable_robot.py -e
 ```
 
-(8) Run the grasping demo:
+(9) Run the grasping demo:
 
 ```
 python ~/ros_ws/src/grasp_selection/scripts/grasping_demo.py
