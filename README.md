@@ -90,9 +90,11 @@ The parameters in the ROS launch file *select_grasps.launch* are described below
 
 **Requirements**
 
-* a Baxter research robot with a Microsoft Kinect or a similar range sensor
+* a Baxter research robot
+* a Microsoft Kinect or a similar range sensor
 * [openrave](http://www.openrave.org/)
 * [agile_grasp](http://wiki.ros.org/agile_grasp)
+* a ROS node that transforms point clouds into the robot's base frame
 
 The grasping demo can be run by:
 
@@ -104,6 +106,9 @@ python ~/ros_ws/src/grasp_selection/scripts/grasping_demo.py
 	<img src="./readme/openrave.png" alt="Baxter in openrave" title="Baxter in openrave" width="60%" height="60%" /></a>
 
 ### Instructions
+
+The following instructions are an example. To be able to run the demo, you need to modify the 
+**agile_grasp** launch file to work with your range sensor setup.
 
 (1) Start Joint Trajectory Action Server:
 
@@ -126,19 +131,22 @@ roslaunch baxter_moveit_config demo_baxter.launch
 roslaunch openni2_launch openni2.launch
 ```
 
-(5) Launch the agile_grasp perception node:
+(5) Start the node that takes the point clouds produced by *openni2_launch* and transforms them into the robot's base 
+frame.
+
+(6) Launch the agile_grasp perception node:
 
 ```
 roslaunch agile_grasp baxter_grasps.launch
 ```
 
-(6) Turn on the robot:
+(7) Turn on the robot:
 
 ```
 rosrun baxter_tools enable_robot.py -e
 ```
 
-(7) Run the grasping demo:
+(8) Run the grasping demo:
 
 ```
 python ~/ros_ws/src/grasp_selection/scripts/grasping_demo.py
