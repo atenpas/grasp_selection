@@ -88,6 +88,10 @@ The parameters in the ROS launch file *select_grasps.launch* are described below
 
 ## 5) Grasping Demo
 
+<a href="https://raw.githubusercontent.com/atenpas/agile_grasp/master/readme/vlc0.png">
+	<img src="https://raw.githubusercontent.com/atenpas/agile_grasp/master/readme/vlc0.png" 
+  alt="Grasping demo with Baxter" title="Grasping demo with Baxter" width="60%" height="60%" /></a>
+
 **Requirements**
 
 * a Baxter research robot
@@ -103,7 +107,7 @@ python ~/ros_ws/src/grasp_selection/scripts/grasping_demo.py
 ```
 
 <a href="https://raw.githubusercontent.com/atenpas/grasp_selection/master/readme/openrave.png">
-	<img src="./readme/openrave.png" alt="Baxter in openrave" title="Baxter in openrave" width="60%" height="60%" /></a>
+	<img src="./readme/openrave.png" alt="Baxter in openrave" title="Baxter in openrave" width="33%" height="33%" /></a>
 
 ### Instructions
 
@@ -157,6 +161,3 @@ rosrun baxter_tools enable_robot.py -e
 ```
 python ~/ros_ws/src/grasp_selection/scripts/grasping_demo.py
 ```
-
-<a href="https://raw.githubusercontent.com/atenpas/agile_grasp/master/readme/vlc0.png">
-	<img src="https://raw.githubusercontent.com/atenpas/agile_grasp/master/readme/vlc0.png" alt="Baxter in openrave" title="Baxter in openrave" width="60%" height="60%" /></a>
