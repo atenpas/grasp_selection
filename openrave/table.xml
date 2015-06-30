@@ -1,0 +1,31 @@
+<Environment>
+<!--
+  <KinBody name="table">
+    <Body type="static" name="table_link">
+      <Geom type="box">
+-->
+<!--
+        <Translation> 0.85 0.0 -0.28 </Translation>
+        <extents> 0.6 0.7 0.11 </extents>
+-->
+<!--
+        <Translation>0.80 -0.25 -0.21</Translation>
+        <extents>0.30 0.60 0.03</extents>
+      </Geom>
+    </Body>
+  </KinBody>
+-->
+  <KinBody name="sensors">
+    <Body type="static" name="sensors_link">
+      <Geom type="box">
+        <Translation> 0.21 0.0 0.2 </Translation>
+        <extents> 0.06 0.4 0.03 </extents>
+      </Geom>
+    </Body>
+  </KinBody>
+</Environment>
+
+<!--
+Point(0.85, 0.0, -0.27)
+  #pose_st_table.pose.orientation = Quaternion(0, 0, 0, 1)
+  #scene.add_box("table", pose_st_table, (0.6, 0.7, 0.11))-->

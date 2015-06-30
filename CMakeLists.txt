@@ -6,7 +6,7 @@ project(grasp_selection)
 ## is used, also find other catkin packages
 ##  cmake_modules required for Indigo to find Eigen, PCL
 find_package(catkin REQUIRED COMPONENTS agile_grasp cmake_modules eigen_conversions geometry_msgs message_generation 
-	moveit_msgs pcl_conversions roscpp sensor_msgs tf tf_conversions urdf visualization_msgs)
+	moveit_msgs pcl_conversions rospy roscpp sensor_msgs tf tf_conversions urdf visualization_msgs)
 
 find_package(Eigen REQUIRED)
 find_package(PCL REQUIRED)
@@ -17,7 +17,7 @@ set(CMAKE_CXX_FLAGS "-DNDEBUG -O3 -Wno-deprecated -Wenum-compare")
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-# catkin_python_setup()
+catkin_python_setup()
 
 ################################################
 ## Declare ROS messages, services and actions ##

@@ -1,0 +1,10 @@
+<!--
+<Robot name="Baxter" file="/home/baxter/baxter_ws/src/grasp_selection/openrave/baxter_structure_mount1.dae">
+-->
+<Robot name="Baxter" file="/home/baxter/baxter_ws/src/grasp_selection/openrave/baxter_structure_mount1.dae">       
+  <Manipulator name="right_arm">
+    <base>right_arm_mount</base>
+    <effector>right_gripper</effector>
+    <iksolver>/home/baxter/baxter_ws/src/grasp_selection/openrave/kinematics.6cb3cfe161824340f42d684ed4252a1c/ikfast69.Transform6D.x86_64.10_11_12_13_14_15_f9.so</iksolver>
+  </Manipulator>    
+</Robot>

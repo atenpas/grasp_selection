@@ -9,7 +9,7 @@
     
 		<!-- Reachibility Parameters -->
     <rosparam param="workspace"> [0.6, 1.0, -0.26, 0.14, -0.23, 1] </rosparam>
-    <param name="min_aperture" value="0.03" />
+    <param name="min_aperture" value="0.02" />
     <param name="max_aperture" value="0.07" />
     <param name="num_additional_grasps" value="0" />
     <rosparam param="axis_order"> [2, 0, 1] </rosparam>
@@ -22,7 +22,7 @@
     <param name="JS_last_joint_index" value="15" />
     <param name="IK_first_joint_index" value="8" />
     <param name="IK_last_joint_index" value="14" />
-    <param name="prints" value="false" />
+    <param name="prints" value="true" />
     
     <!-- Scoring Parameters -->
     <param name="urdf" value="/home/baxter/baxter_ws/src/baxter_common/baxter_description/urdf/baxter.urdf" />    
