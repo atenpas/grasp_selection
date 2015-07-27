@@ -163,7 +163,7 @@ class Grasping():
     joints_pre_nominal = [0.017640779040527344, -1.074170045489502, 0.39269908125, 2.052466291845703, -0.4233786969726563, 0.6879903825805664, 0.031446606115722656]
     joints_nominal = [0.4996942410827637, -0.8034224367370606, 0.18906313189086915, 2.178252716308594, -0.08436894323730469, -0.6358350358520508, -0.10699515983276368]
               
-    #env.SetViewer('qtcoin') # start the viewer (conflicts with matplotlib)
+    env.SetViewer('qtcoin') # start the viewer (conflicts with matplotlib)
     
     robot = env.GetRobots()[0] # get the first robot
     
@@ -287,27 +287,12 @@ class Grasping():
                   
       except rospy.ServiceException, e:
         print "Service call failed: %s"%e
-
-    #finally:
-      #openravepy.RaveDestroy() # destroys all environments and loaded plugins
   
     exit()
 
 
 # main code
 if __name__ == '__main__':
-  #env = openravepy.Environment()
-  #env.StopSimulation()
-  #env.Load('/home/baxter/baxter_ws/src/sensor_explorer/openravestuff/manipulator_baxter_structure.xml')
-  #openrave_root = '/home/baxter/baxter_ws/src/grasp_selection/openrave/'
-  #env.Load(openrave_root + "manipulator_baxter_structure.xml")
-  #import openravepy
-  #print "Initializing OpenRave"
-  #env = openravepy.Environment()
-  #env.StopSimulation()
-  #openrave_root = '/home/baxter/baxter_ws/src/grasp_selection/openrave/'
-  #env.Load(openrave_root + "manipulator_baxter_structure.xml")
-  #exit(-1)
   try:
     grasp = Grasping()
     grasp.run()
