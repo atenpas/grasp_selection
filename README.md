@@ -24,6 +24,7 @@ This package consists of one ROS node: *select_grasps*.
 ## 2) Requirements
 1. [ROS Hydro](http://wiki.ros.org/hydro) or [ROS Indigo](http://wiki.ros.org/indigo)
 2. [agile_grasp](http://wiki.ros.org/agile_grasp) package
+3. [MoveIt](http://moveit.ros.org/) for providing Inverse Kinematics solutions
 
 
 ## 3) Installation
@@ -40,7 +41,27 @@ Same as *3.1*, except for Step (3): `$ git clone https://github.com/atenpas/gras
 
 
 ## 4) Usage
-The easiest way to use this package is:
+This package requires the MoveIt */compute_ik* ROS service to calculate Inverse Kinematics. The following two steps 
+explain how to start this service when using a Baxter robot. First, start the joint trajectory action server:
+
+```
+rosrun baxter_interface joint_trajectory_action_server.py
+```
+
+Next, launch rviz with moveit:
+
+```
+roslaunch baxter_moveit_config demo_baxter.launch
+```
+
+The next step is to launch an [agile_grasp](http://wiki.ros.org/agile_grasp) node (check the link for further 
+instructions):
+
+```
+roslaunch agile_grasp baxter_grasps.launch
+```
+
+Now, the grasp_selection node can be launched:
 
 ```
 roslaunch grasp_selection select_grasps.launch
