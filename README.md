@@ -70,8 +70,11 @@ roslaunch grasp_selection select_grasps.launch
 The node works by first testing each grasp for reachability. All the remaining grasps are then scored according to the 
 three scoring functions listed above. The node finally selects the *k* top scoring grasps.
 
+The grasp selection node provides the selected grasps through a ROS service (see srv/SelectGrasps.srv). The grasping 
+demo mentioned below contains example code for accessing this service.
 
-### Parameters
+
+## 5) Parameters
 
 The parameters in the ROS launch file *select_grasps.launch* are described below.
 
