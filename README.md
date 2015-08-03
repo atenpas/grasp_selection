@@ -24,6 +24,7 @@ This package consists of one ROS node: *select_grasps*.
 ## 2) Requirements
 1. [ROS Hydro](http://wiki.ros.org/hydro) or [ROS Indigo](http://wiki.ros.org/indigo)
 2. [agile_grasp](http://wiki.ros.org/agile_grasp) package
+3. [MoveIt](http://moveit.ros.org/) for providing Inverse Kinematics solutions
 
 
 ## 3) Installation
@@ -40,7 +41,27 @@ Same as *3.1*, except for Step (3): `$ git clone https://github.com/atenpas/gras
 
 
 ## 4) Usage
-The easiest way to use this package is:
+This package requires the MoveIt */compute_ik* ROS service to calculate Inverse Kinematics. The following two steps 
+explain how to start this service when using a Baxter robot. First, start the joint trajectory action server:
+
+```
+rosrun baxter_interface joint_trajectory_action_server.py
+```
+
+Next, launch rviz with moveit:
+
+```
+roslaunch baxter_moveit_config demo_baxter.launch
+```
+
+The next step is to launch an [agile_grasp](http://wiki.ros.org/agile_grasp) node (check the link for further 
+instructions):
+
+```
+roslaunch agile_grasp baxter_grasps.launch
+```
+
+Now, the grasp_selection node can be launched:
 
 ```
 roslaunch grasp_selection select_grasps.launch
@@ -49,8 +70,29 @@ roslaunch grasp_selection select_grasps.launch
 The node works by first testing each grasp for reachability. All the remaining grasps are then scored according to the 
 three scoring functions listed above. The node finally selects the *k* top scoring grasps.
 
+The grasp selection node provides the selected grasps through a ROS service (see srv/SelectGrasps.srv). The grasping 
+demo mentioned below contains example code for accessing this service.
 
-### Parameters
+
+## 5) Grasping Demo
+
+The package comes with two grasping demos, one that uses [OpenRAVE](http://www.openrave.org/), and one that uses 
+[MoveIt](http://moveit.ros.org/). MoveIt is the simpler way of running the grasping demo.
+
+### MoveIt
+
+```
+rosrun grasp_selection moveit_grasping.py
+```
+
+### OpenRAVE
+
+```
+rosrun grasp_selection openrave_grasping.py
+```
+
+
+## 6) Parameters
 
 The parameters in the ROS launch file *select_grasps.launch* are described below.
 
@@ -78,18 +120,20 @@ The parameters in the ROS launch file *select_grasps.launch* are described below
 * JS_last_joint_index: the index of the last arm joint on the *joint_states* ROS topic
 * IK_first_joint_index: the index of the first arm joint in the IK solver's solution 
 * IK_last_joint_index: the index of the last arm joint in the IK solver's solution
+* planning_library: which motion planning library is used for solving IK (0: MoveIt, 1: OpenRAVE)
 * prints: whether additional information is printed during reachability tests
+
+**Notice:** When using OpenRAVE as the planning_library, the ikfast solver ROS service contained in this package needs 
+to be started:
+
+```
+rosrun grasp_selection ikfast_service.py
+```
+
+This service provides IK solutions using OpenRAVE. They are used for reachability and scoring in the grasp selection 
+process.
 
 #### Scoring
 
 * urdf: the location of the URDF file
 * num_selected: the number of selected grasps
-
-
-## 5) Grasping Demo
-
-This requires [openrave](http://www.openrave.org/). The grasping demo can be run by:
-
-```
-python ~/ros_workspace/src/grasp_selection/scripts/grasping_demo.py
-```

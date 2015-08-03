@@ -22,7 +22,7 @@
     <param name="JS_last_joint_index" value="15" />
     <param name="IK_first_joint_index" value="8" />
     <param name="IK_last_joint_index" value="14" />
-    <param name="planning_library" value="1" /> <!-- 0: MoveIt, 1: OpenRAVE -->
+    <param name="planning_library" value="0" /> <!-- 0: MoveIt, 1: OpenRAVE -->
     <param name="prints" value="true" />
     
     <!-- Scoring Parameters -->
