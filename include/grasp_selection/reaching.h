@@ -9,6 +9,7 @@
 #include <eigen_conversions/eigen_msg.h>
 #include <moveit_msgs/GetPositionIK.h>
 #include <pcl_conversions/pcl_conversions.h>
+#include <ros/console.h>
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <tf/transform_datatypes.h>
@@ -23,6 +24,9 @@
 #include <agile_grasp/Grasps.h>
 
 #include <grasp_selection/grasp_scored.h>
+#include <grasp_selection/SolveIK.h>
+#include <grasp_selection/SolveIKRequest.h>
+#include <grasp_selection/SolveIKResponse.h>
 
 
 typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
@@ -59,6 +63,7 @@ class Reaching
 			int ik_last_joint_index_; ///< the last index of the arm joints when using the Inverse Kinematics solver
       int js_first_joint_index_; ///< the first index of the arm joints on the joint_states ROS topic
 			int js_last_joint_index_; ///< the last index of the arm joints on the joint_states ROS topic
+      int planning_lib_; ///< which motion planning library is used (0: MoveIt, 1: OpenRAVE)
       bool is_printing_; ///< whether additional information is printed while evaluating grasps for reachability
 		};
 		
@@ -119,6 +124,17 @@ class Reaching
 			Eigen::Vector3d approach_; ///< the grasp approach direction
 			Eigen::Vector3d binormal_; ///< the vector orthogonal to the hand axis and the grasp approach direction
 		};
+    
+    /**
+     * \brief Inverse Kinematics data structure.
+    */
+    struct IKSolution
+    {
+      IKSolution() { }
+      
+      bool success_; ///< whether an Inverse Kinematics solution was found
+      std::vector<double> joint_positions_; ///< the joint positions found
+    };
 	
 		/**
 			* \brief Check whether a given position lies within the robot's workspace.
@@ -158,15 +174,33 @@ class Reaching
 			* \return the grasp pose ROS message
 		*/
 		geometry_msgs::PoseStamped createGraspPose(const GraspEigen& grasp, const tf::Quaternion& quat, double theta);
+    
+    /**
+			* \brief Solve the Inverse Kinematics problem for a given pose using OpenRAVE or MoveIt.
+			* \param pose the pose for which the Inverse Kinematics problem is solved
+			* \param attempts (only for MoveIt) the maximum number of attempts that MoveIt can use to find a solution
+			* \param timeout (only for MoveIt) the maximum time that the MoveIt can spend to find a solution
+			* \return a bool indicating whether the solver succeeded and the joint angles that the IK solver found (if any)
+		*/
+    IKSolution solveIK(const geometry_msgs::PoseStamped& pose, int attempts = 1, double timeout = 0.01);
 		
 		/**
-			* \brief Solve the Inverse Kinematics problem for a given pose.
+			* \brief Solve the Inverse Kinematics problem for a given pose using OpenRave.
 			* \param pose the pose for which the Inverse Kinematics problem is solved
 			* \param attempts the maximum number of attempts that the Inverse Kinematics solver can use to find a solution
 			* \param timeout the maximum time that the Inverse Kinematics can spend to find a solution
 			* \return the joint angles that the Inverse Kinematics solver found
 		*/
-		moveit_msgs::GetPositionIK::Response solveIK(const geometry_msgs::PoseStamped& pose, int attempts = 1, 
+		grasp_selection::SolveIK::Response solveIKOpenRave(const geometry_msgs::PoseStamped& pose);
+    
+    /**
+			* \brief Solve the Inverse Kinematics problem for a given pose using MoveIt.
+			* \param pose the pose for which the Inverse Kinematics problem is solved
+			* \param attempts the maximum number of attempts that the Inverse Kinematics solver can use to find a solution
+			* \param timeout the maximum time that the Inverse Kinematics can spend to find a solution
+			* \return the joint angles that the Inverse Kinematics solver found
+		*/
+    moveit_msgs::GetPositionIK::Response solveIKMoveIt(const geometry_msgs::PoseStamped& pose, int attempts = 1, 
 			double timeout = 0.01);
 		
 		/**
@@ -183,12 +217,20 @@ class Reaching
 			* \return the set of joint angles of the robot arm
 		*/
 		std::vector<double> extractJointPositions(const moveit_msgs::GetPositionIK::Response& ik_response);
+    
+    void logPrint(const std::string& s) 
+    {
+      if (params_.is_printing_)
+        std::cout << s;
+    }
 		
-		ros::ServiceClient ik_solver_;
-		PointCloud::Ptr cloud_;
-	
-		///< Parameters
-		Parameters params_;
+		ros::ServiceClient ik_service_; ///< ROS service for Inverse Kinematics
+		PointCloud::Ptr cloud_; ///< the point cloud used for collision checking			
+		Parameters params_; ///< Parameters
+    
+    ///< constants for switching the motion planning library
+    static const int MOVE_IT = 0;
+    static const int OPEN_RAVE = 1;
 };
 
 #endif /* REACHING_H */ 

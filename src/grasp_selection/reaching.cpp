@@ -4,13 +4,17 @@
 Reaching::Reaching(const Parameters& params, ros::NodeHandle& node) : params_(params), cloud_(new PointCloud)
 {
 	// wait for Inverse Kinematics service
-  ik_solver_ = node.serviceClient<moveit_msgs::GetPositionIK>("/compute_ik");
-  while (!ik_solver_.exists())
+  if (params_.planning_lib_ == Reaching::MOVE_IT)
+    ik_service_ = node.serviceClient<moveit_msgs::GetPositionIK>("/compute_ik");
+  else if (params_.planning_lib_ == Reaching::OPEN_RAVE)
+    ik_service_ = node.serviceClient<grasp_selection::SolveIK>("/ikfast_solver");
+  
+  while (!ik_service_.exists())
   {
-    ROS_INFO("Waiting for compute_ik service ...");
+    ROS_INFO("Waiting for Inverse Kinematics service ...");
     ros::Duration(1.0).sleep();
   }
-  ROS_INFO("compute_ik service is available");
+  ROS_INFO("Inverse Kinematics service is available");
 }
 
 
@@ -24,30 +28,24 @@ std::vector<GraspScored> Reaching::selectFeasibleGrasps(const agile_grasp::Grasp
     const agile_grasp::Grasp& grasp = grasps_in.grasps[i];
     
     // check whether grasp lies within the workspace of the robot arm
-    if (params_.is_printing_)
-      printf("Checking if grasp %i, position (%1.2f, %1.2f, %1.2f), can be reached: ", i, grasp.center.x, 
-        grasp.center.y, grasp.center.z);
-		if (!isInWorkspace(grasp.center.x, grasp.center.y, grasp.center.z))
+    ROS_INFO_COND(params_.is_printing_, "Checking if grasp %i, position (%1.2f, %1.2f, %1.2f), can be reached: ", i, 
+      grasp.center.x, grasp.center.y, grasp.center.z);    
+		if (!isInWorkspace(grasp.surface_center.x, grasp.surface_center.y, grasp.surface_center.z))
 		{
-			if (params_.is_printing_)
-        printf(" NOT OK!\n");
+      ROS_INFO_COND(params_.is_printing_, " NOT OK!");
 			continue;
 		}
-		if (params_.is_printing_)
-      printf(" OK\n");
+		ROS_INFO_COND(params_.is_printing_, " OK");
 
     // avoid objects that are smaller/larger than the minimum/maximum robot hand aperture
-    if (params_.is_printing_)
-      printf("Checking aperture: ");
+    ROS_INFO_COND(params_.is_printing_, "Checking aperture: ");
     if (grasp.width.data < params_.min_aperture_ || grasp.width.data > params_.max_aperture_)
     {
-      if (params_.is_printing_)
-        printf("too small/large for the hand (min, max): %.4f (%.4f, %.4f)!\n", grasp.width.data, params_.min_aperture_, 
-          params_.max_aperture_);
+      ROS_INFO_COND(params_.is_printing_, "too small/large for the hand (min, max): %.4f (%.4f, %.4f)!", 
+        grasp.width.data, params_.min_aperture_, params_.max_aperture_);
       continue;
     }
-    if (params_.is_printing_)
-      printf(" OK\n");
+    ROS_INFO_COND(params_.is_printing_, " OK");
     
     GraspEigen grasp_eigen(grasp);
     
@@ -66,82 +64,63 @@ std::vector<GraspScored> Reaching::selectFeasibleGrasps(const agile_grasp::Grasp
     // check all grasps for reachability
     for (int j = 0; j < theta.size(); j++)
     {
-			if (params_.is_printing_)
-        printf("j: %i \n", j);
+			ROS_INFO_COND(params_.is_printing_, "j: %i", j);
       
       // calculate approach vector and hand axis for the new grasp
 			GraspEigen grasp_eigen_rot = rotateGrasp(grasp_eigen, theta[j]);
-			
-			// filter out side grasps
-			//if (isSideGrasp(grasp_eigen_rot.approach_))
-			//{
-				//printf("Grasp %i is a side grasp (restricted to top grasps)!\n", i);
-				//continue;
-			//}
-			
+		
 			// create a grasp for each hand orientation and check whether they are reachable by the IK and collision-free
       std::vector<tf::Quaternion> quats = calculateHandOrientations(grasp_eigen_rot);
       bool is_collision_free = false;      
       for (int k = 0; k < quats.size(); k++)
       {
-        if (params_.is_printing_)
-          printf("k: %i \n", k);
+        ROS_INFO_COND(params_.is_printing_, "k: %i", k);
         
         // create grasp pose
         geometry_msgs::PoseStamped grasp_pose = createGraspPose(grasp_eigen_rot, quats[k], theta[j]);
         
         // try to solve IK
-        if (params_.is_printing_)
-          printf(" Solving IK: ");
+        ROS_INFO_COND(params_.is_printing_, " Solving IK: ");
         double tik0 = omp_get_wtime();
-				moveit_msgs::GetPositionIK::Response response = solveIK(grasp_pose);
-        std::cout << " IK runtime: " << omp_get_wtime() - tik0 << std::endl;
-				if (response.error_code.val == response.error_code.NO_IK_SOLUTION) // IK fails
+        IKSolution ik_solution = solveIK(grasp_pose);        
+        ROS_INFO_COND(params_.is_printing_, " IK runtime: %.2f", omp_get_wtime() - tik0);
+				if (!ik_solution.success_) // IK fails
 				{
-					if (params_.is_printing_)
-            printf("IK failed for grasp %i, approach %i, orientation %i!\n", i, j, k);
+					ROS_INFO_COND(params_.is_printing_, "IK failed for grasp %i, approach %i, orientation %i!\n", i, j, k);
 					continue;
 				}
-        if (params_.is_printing_)
-          printf("OK\n");
+        ROS_INFO_COND(params_.is_printing_, " OK");
         
         // check collisions (only required for one orientation/quaternion)
-        if (params_.is_printing_)
-          printf(" Checking collisions: ");
+        ROS_INFO_COND(params_.is_printing_, " Checking collisions: ");
         if (!is_collision_free)
         {
           double tcoll0 = omp_get_wtime();
 					is_collision_free = isCollisionFree(grasp_pose, grasp_eigen_rot.approach_);
-          std::cout << " Collision checker runtime: " << omp_get_wtime() - tcoll0 << std::endl;
+          ROS_INFO_COND(params_.is_printing_, " Collision checker runtime: %.2f", omp_get_wtime() - tcoll0);
 					if (!is_collision_free)
 					{
-						if (params_.is_printing_)
-              printf("Grasp %i, approach %i, orientation %i collides with point cloud!\n", i, j, k);
+						ROS_INFO_COND(params_.is_printing_, "Grasp %i, approach %i, orientation %i collides with point cloud!\n", i,
+              j, k);
 						continue;
 					}
 				}
-        if (params_.is_printing_)
-          printf("OK\n");
-				
-        if (params_.is_printing_)
-          printf("before extracting joint positions\n");
-				std::vector<double> joint_positions = extractJointPositions(response);
-        if (params_.is_printing_)
-          printf("extracted joint positions\n");
-				GraspScored grasp_scored(i, grasp_pose, grasp_eigen_rot.approach_, grasp.width.data, joint_positions, 0.0);
+        ROS_INFO_COND(params_.is_printing_, " OK");
+				        
+				if (params_.is_printing_)
+        {
+          std::cout << "IK solution: ";
+          for(int t=0; t < ik_solution.joint_positions_.size(); t++)
+            std::cout << ik_solution.joint_positions_[t] << " ";
+          std::cout << std::endl;
+        }
+        
+        // create grasp based on inverse kinematics solution
+				GraspScored grasp_scored(i, grasp_pose, grasp_eigen_rot.approach_, grasp.width.data, ik_solution.joint_positions_, 0.0);
 				grasps_selected.push_back(grasp_scored);
       }
 		}
 	}
-  
-  //tf::TransformBroadcaster br;
-  //tf::Transform transform;
-  //GraspScored g = grasps_selected[0];
-  //transform.setOrigin( tf::Vector3(g.pose_st_.pose.position.x, g.pose_st_.pose.position.y, g.pose_st_.pose.position.z) );
-  //transform.setRotation( tf::Quaternion(g.pose_st_.pose.orientation.x, g.pose_st_.pose.orientation.y, g.pose_st_.pose.orientation.z, g.pose_st_.pose.orientation.w) );
-  //br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base", "carrot1"));
-  //ros::Duration(1.0).sleep();
-  //printf("broadcasted TF\n");
 	
 	return grasps_selected;
 }
@@ -238,17 +217,8 @@ Eigen::Matrix3d Reaching::reorderHandAxes(const Eigen::Matrix3d& Q)
 geometry_msgs::PoseStamped Reaching::createGraspPose(const GraspEigen& grasp, const tf::Quaternion& quat, double theta)
 {  
   // calculate grasp position
-  Eigen::Vector3d position;
+  Eigen::Vector3d position = grasp.center_;
   Eigen::Vector3d approach = -1.0 * grasp.approach_;
-  if (theta != 0)
-  {
-    // project grasp bottom position onto the line defined by grasp surface position and approach vector
-    Eigen::Vector3d s, b, a;
-    position = (grasp.center_ - grasp.surface_center_).dot(approach) * approach;
-    position += grasp.surface_center_;
-  }
-  else
-    position = grasp.center_;
     
 	// translate grasp position by <hand_offset_> along the grasp approach vector
 	position = position + params_.hand_offset_ * approach;
@@ -263,7 +233,49 @@ geometry_msgs::PoseStamped Reaching::createGraspPose(const GraspEigen& grasp, co
 }
 
 
-moveit_msgs::GetPositionIK::Response Reaching::solveIK(const geometry_msgs::PoseStamped& pose, int attempts, 
+Reaching::IKSolution Reaching::solveIK(const geometry_msgs::PoseStamped& pose, int attempts, double timeout)
+{
+  IKSolution ik;
+  
+  if (params_.planning_lib_ == Reaching::MOVE_IT)
+  {
+    moveit_msgs::GetPositionIK::Response resp = solveIKMoveIt(pose, attempts, timeout);
+    if (resp.error_code.val == resp.error_code.NO_IK_SOLUTION)
+    {
+      ik.success_ = false;
+      ik.joint_positions_.resize(0);
+    }
+    else
+    {
+      ik.success_ = true;
+      ik.joint_positions_ = extractJointPositions(resp);
+    }
+  }
+  else if (params_.planning_lib_ == Reaching::OPEN_RAVE)
+  {
+    grasp_selection::SolveIK::Response resp = solveIKOpenRave(pose);
+    ik.success_ = resp.success;
+    ik.joint_positions_ = resp.solution;
+  }
+    
+  return ik;
+}
+
+
+grasp_selection::SolveIK::Response Reaching::solveIKOpenRave(const geometry_msgs::PoseStamped& pose)
+{
+  // create IK request
+  grasp_selection::SolveIK::Request req;
+  req.target_pose = pose.pose;
+  
+  // solve IK
+  grasp_selection::SolveIK::Response resp;
+  ik_service_.call(req, resp);  
+  return resp;
+}
+
+
+moveit_msgs::GetPositionIK::Response Reaching::solveIKMoveIt(const geometry_msgs::PoseStamped& pose, int attempts, 
 	double timeout)
 {
   // create IK request
@@ -274,13 +286,13 @@ moveit_msgs::GetPositionIK::Response Reaching::solveIK(const geometry_msgs::Pose
   request.ik_request.pose_stamped = pose;
   request.ik_request.pose_stamped.header.stamp = ros::Time::now();
   request.ik_request.ik_link_name = params_.arm_link_;
-  request.ik_request.avoid_collisions = true;
+  request.ik_request.avoid_collisions = false;
   
   //std::cout << "IK Request:\n" << request << std::endl;
 
   // solve IK
   moveit_msgs::GetPositionIK::Response response;
-  ik_solver_.call(request, response);
+  ik_service_.call(request, response);
   return response;
 }
 

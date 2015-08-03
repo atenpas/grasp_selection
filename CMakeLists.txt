@@ -47,7 +47,7 @@ catkin_python_setup()
 add_message_files(FILES Grasp.msg GraspList.msg)
 
 ## Generate services in the 'srv' folder
-add_service_files(FILES SelectGrasps.srv)
+add_service_files(FILES SelectGrasps.srv SolveIK.srv)
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(DEPENDENCIES geometry_msgs std_msgs)

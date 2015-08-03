@@ -1,0 +1,12 @@
+# A service call for solving an Inverse Kinematics problem.
+# The request send to the service
+
+float64[] current_joint_positions
+geometry_msgs/Pose target_pose
+
+---
+
+# The response returned by the service
+
+float64[] solution
+bool success

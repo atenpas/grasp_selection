@@ -30,6 +30,7 @@ int main(int argc, char** argv)
   node.getParam("JS_last_joint_index", params.js_last_joint_index_);
   node.getParam("IK_first_joint_index", params.ik_first_joint_index_);
   node.getParam("IK_last_joint_index", params.ik_last_joint_index_);
+  node.getParam("planning_library", params.planning_lib_);
   node.getParam("prints", params.is_printing_);
   
   // read ROS launch file parameters for scoring class

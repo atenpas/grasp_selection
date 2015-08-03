@@ -1,0 +1,7 @@
+<robot file="baxter_arm.right.rounded.dae"> 
+  <manipulator name="right_arm"> 
+    <base>right_arm_mount</base>
+    <effector>right_gripper</effector>
+    <iksolver>/home/andreas/software/baxter_custom_ikfast/libik_right.so</iksolver>  
+  </manipulator> 
+</robot> 

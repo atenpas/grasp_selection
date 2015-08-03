@@ -10,6 +10,8 @@ Panels:
         - /MotionPlanning1/Planning Request1
         - /MotionPlanning1/Planning Metrics1
         - /MotionPlanning1/Planned Path1
+        - /Axes1
+        - /Axes2
       Splitter Ratio: 0.395933
     Tree Height: 391
   - Class: rviz/Help
@@ -622,9 +624,39 @@ Visualization Manager:
       Marker Topic: /select_grasps/grasps_selected
       Name: Grasps
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
       Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: target
+      Name: Target
+      Namespaces:
+        "": true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /waypoints
+      Name: Waypoints
+      Namespaces:
+        waypoints: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/Axes
+      Enabled: true
+      Length: 0.1
+      Name: Axes
+      Radius: 0.01
+      Reference Frame: hand1
+      Value: true
+    - Class: rviz/Axes
+      Enabled: false
+      Length: 0.1
+      Name: Axes
+      Radius: 0.01
+      Reference Frame: right_gripper
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -640,22 +672,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 2.26955
+      Distance: 1.38031
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.75452
-        Y: 0.145123
-        Z: 2.93317e-05
+        X: 0.947241
+        Y: 0.0516741
+        Z: 2.90114e-05
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.7698
+      Pitch: 0.634797
       Target Frame: base_link
       Value: XYOrbit (rviz)
-      Yaw: 0.451736
+      Yaw: 0.456736
     Saved: ~
 Window Geometry:
   Displays:

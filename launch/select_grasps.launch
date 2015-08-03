@@ -2,7 +2,7 @@
   <remap from="/joint_states" to="/robot/joint_states"/>
 	<node name="select_grasps" pkg="grasp_selection" type="selection_node" output="screen">
   	<param name="cloud_topic" value="/register_clouds/point_cloud" />
-    <param name="grasps_topic" value="/find_grasps/grasps" />
+    <param name="grasps_topic" value="/find_grasps/handle_grasps" />
     <param name="joint_states_topic" value= "/joint_states" />
     <param name="marker_lifetime" value="60" />
     <param name="uses_scoring" value="true" />
@@ -22,6 +22,7 @@
     <param name="JS_last_joint_index" value="15" />
     <param name="IK_first_joint_index" value="8" />
     <param name="IK_last_joint_index" value="14" />
+    <param name="planning_library" value="1" /> <!-- 0: MoveIt, 1: OpenRAVE -->
     <param name="prints" value="true" />
     
     <!-- Scoring Parameters -->

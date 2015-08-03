@@ -1,4 +1,4 @@
-# A service call for assembling a series of laser scans into a point cloud
+# A service call for selecting a grasp based on the output of the agile_grasp package and the current end effector pose.
 # The request send to the service
 
 geometry_msgs/Pose hand_pose

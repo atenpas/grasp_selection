@@ -102,8 +102,8 @@ class Scoring
 		int num_selected_; ///< the number of selected grasps (= the top K grasps)
     int scoring_mode_; ///< the scoring mode: which scoring functions are used
 		
-		static const double ARM_JOINT_LIMITS_DISTANCE = 20.0 * (M_PI / 180.0); // distance from joint limits
-		static const double HAND_APERTURE_LIMITS_DISTANCE = 0.015; // preferred distance from min and max gripper width   
+		static const double ARM_JOINT_LIMITS_DISTANCE = 20.0 * (M_PI / 180.0); ///< distance from joint limits
+		static const double HAND_APERTURE_LIMITS_DISTANCE = 0.015; ///< prefered distance from min and max gripper width   
 };
 
 #endif /* SCORING_H */ 
