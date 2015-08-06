@@ -91,6 +91,10 @@ rosrun grasp_selection moveit_grasping.py
 rosrun grasp_selection openrave_grasping.py
 ```
 
+**Remark:** To run the grasping demo, you need to follow the steps listed in *(4) Usage*. In addition, a ROS node needs 
+to be running that provides point clouds in the same frame in which arm motions are planned. The point clouds produced 
+by that node need to be the input to the agile_grasp and grasp_selection packages.
+
 
 ## 6) Parameters
 
